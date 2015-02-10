@@ -5,6 +5,11 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * JDBC����
@@ -61,5 +66,79 @@ public class JdbcUtils {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	/**
+	 * 获取指定数据库中指定表的字段名
+	 * @param dbName 数据库名
+	 * @param table 表名
+	 * @return List<String>形式存放字段名
+	 */
+	public static List<String> parseDB(String dbName, String table){
+		String url = "jdbc:sqlserver://localhost:1433;DatabaseName=" + dbName;
+		ArrayList<String> params = new ArrayList<String>();
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rst = null;
+		try {
+			conn = JdbcUtils.getConnection(url, "sa", "ri1yvi2txgt6");
+			if(conn != null){
+				pstmt = conn.prepareStatement("SELECT Name FROM SysColumns WHERE id=Object_Id('" + table + "') ");
+				if(pstmt != null){
+					rst = pstmt.executeQuery();
+					if(rst != null){
+						while(rst.next()){
+							params.add(rst.getString("Name"));
+						}
+					}
+				}
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			JdbcUtils.closeRS(conn, pstmt, rst);
+		}
+		return params;
+	}
+	
+	/**
+	 * 将数据库中的数据以String的方式返回
+	 * @param dbName 数据库名
+	 * @param table 表名
+	 * @param params 数据库表字段
+	 * @return 以List<List<String>>的方式返回表中的数据
+	 */
+	public static List<List<String>> getStringRst(String dbName, String table, List<String> params){
+		String url = "jdbc:sqlserver://localhost:1433;DatabaseName=" + dbName;
+		List<List<String>> strRst = new ArrayList<List<String>>();
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rst = null;
+		try {
+			conn = JdbcUtils.getConnection(url, "sa", "ri1yvi2txgt6");
+			if(conn != null){
+				pstmt = conn.prepareStatement("SELECT * FROM " + table);
+				if(pstmt != null){
+					rst = pstmt.executeQuery();
+					if(rst != null){
+						while(rst.next()){
+							List<String> lsRst = new ArrayList<String>();
+							for(String s : params){
+								String value = rst.getString(s);
+								lsRst.add(value);
+							}
+							strRst.add(lsRst);
+						}
+					}
+				}
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			JdbcUtils.closeRS(conn, pstmt, rst);
+		}
+		return strRst;
 	}
 }

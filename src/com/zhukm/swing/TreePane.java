@@ -10,9 +10,18 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
 public class TreePane extends JPanel {
-	public TreePane(){
+	private Toolbar toolbar;
+	public TreePane(){}
+	public TreePane(InfoPane infoPane){
+		toolbar = new Toolbar(infoPane);
 		this.setLayout(new BorderLayout());
-		this.add(new Toolbar(),"North");
+		this.add(toolbar,"North");
+	}
+	public Toolbar getToolbar() {
+		return toolbar;
+	}
+	public void setToolbar(Toolbar toolbar) {
+		this.toolbar = toolbar;
 	}
 }
 
@@ -22,8 +31,8 @@ class Toolbar extends JPanel{
 	JButton dBtn;
 	JButton rBtn;
 	JButton cBtn;
-	public Toolbar(){
-		this.setSize(400, 1200);
+
+	public Toolbar(InfoPane infoPane){
 		init();
 		
 		toolbar.add(pBtn);
@@ -32,7 +41,7 @@ class Toolbar extends JPanel{
 		toolbar.add(cBtn);
 		this.setLayout(new BorderLayout());
 		this.add(toolbar, "North");
-		this.add(new ScroPane(), "Center");
+		this.add(new ScroPane(infoPane), "Center");
 	}
 	
 	public void init(){
@@ -57,5 +66,45 @@ class Toolbar extends JPanel{
 		
 		ImageIcon cIcon = new ImageIcon("images\\clear.gif");
 		cBtn.setIcon(cIcon);
+	}
+	
+	public JToolBar getToolbar() {
+		return toolbar;
+	}
+
+	public void setToolbar(JToolBar toolbar) {
+		this.toolbar = toolbar;
+	}
+
+	public JButton getpBtn() {
+		return pBtn;
+	}
+
+	public void setpBtn(JButton pBtn) {
+		this.pBtn = pBtn;
+	}
+
+	public JButton getdBtn() {
+		return dBtn;
+	}
+
+	public void setdBtn(JButton dBtn) {
+		this.dBtn = dBtn;
+	}
+
+	public JButton getrBtn() {
+		return rBtn;
+	}
+
+	public void setrBtn(JButton rBtn) {
+		this.rBtn = rBtn;
+	}
+
+	public JButton getcBtn() {
+		return cBtn;
+	}
+
+	public void setcBtn(JButton cBtn) {
+		this.cBtn = cBtn;
 	}
 }

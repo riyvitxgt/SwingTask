@@ -2,13 +2,14 @@ package com.zhukm.swing;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
@@ -18,13 +19,14 @@ import com.zhukm.utils.JdbcUtils;
 public class ScroPane extends JScrollPane {
 	String url = "jdbc:sqlserver://localhost:1433;DatabaseName=mybatis";
 	String user = "sa";
-	String password = "123456";
-	File f = new File("C:\\Foxmail 7.2\\Storage\\zhukm@gildata.com");
+	String password = "ri1yvi2txgt6";
 	DefaultMutableTreeNode root = new DefaultMutableTreeNode("数据库列表");
-
+	private InfoPane infoPane;
 	// root;
-	public ScroPane() {
+	public ScroPane(InfoPane info) {
 		final JTree tree = new JTree(addDB(root));
+		
+		this.infoPane = info;
 		tree.addMouseListener(new MouseAdapter(){
 
 			@Override
@@ -36,7 +38,22 @@ public class ScroPane extends JScrollPane {
 					TreePath  selTree = tree.getPathForRow(n);
 					DefaultMutableTreeNode node = (DefaultMutableTreeNode)selTree.getLastPathComponent();
 					if(node.isLeaf()){
-						System.out.println(node);
+						if("数据库列表".equals(node.getParent().toString())) return;
+						String dbName = node.getParent().toString();
+						String table = node.toString();
+						List<String> params = JdbcUtils.parseDB(dbName, table);
+						List<List<String>> strRst = JdbcUtils.getStringRst(dbName, table, params);
+						JTable jt = new JTable(strRst.size()+1,params.size());
+						for(int i = 0; i < params.size(); i++){
+							jt.setValueAt(params.get(i), 0, i);
+						}
+						
+						for(int i = 0; i < strRst.size(); i++){
+							for(int j = 0; j < params.size(); j++){
+								jt.setValueAt(strRst.get(i).get(j), i+1, j);
+							}
+						}
+						infoPane.setTable(jt);
 					}
 				}
 			}
@@ -44,22 +61,12 @@ public class ScroPane extends JScrollPane {
 		});
 		this.setViewportView(tree);
 	}
-
-	public DefaultMutableTreeNode createNode(File dir,
-			DefaultMutableTreeNode root) {
-		File[] files = dir.listFiles();
-		for (File file : files) {
-			DefaultMutableTreeNode treeNode = new DefaultMutableTreeNode(
-					file.getName());
-			root.add(treeNode);
-			if (file.isDirectory()) {
-				createNode(file, treeNode);
-			}
-		}
-
-		return root;
-	}
-
+	
+	/**
+	 * 查询所有数据库,并创建以数据库名为名字的树节点,最后加下root节点下
+	 * @param root	根节点
+	 * @return	
+	 */
 	public DefaultMutableTreeNode addDB(DefaultMutableTreeNode root){
 		Connection conn = null;        
 		PreparedStatement pstmt = null;
@@ -86,6 +93,12 @@ public class ScroPane extends JScrollPane {
 		return root;
 	}
 	
+	/**
+	 * 从数据库中查询所有表,并将表名做为一个Node节点
+	 * @param node 父节点
+	 * @param name 数据库表
+	 * @return 名字为表名的树节点
+	 */
 	public DefaultMutableTreeNode addTable(DefaultMutableTreeNode node, String name){
 		String uri = "jdbc:sqlserver://localhost:1433;DatabaseName=" + name;
 		Connection conn = null;        

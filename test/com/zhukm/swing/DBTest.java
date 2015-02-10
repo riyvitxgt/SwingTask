@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -67,5 +69,18 @@ public class DBTest {
 	
 	public void change(String a){
 		a = "dddd";
+	}
+	
+	@Test
+	public void testGetParam(){
+		List<String> list = new ArrayList<String>();
+		list = JdbcUtils.parseDB("JD2011_WisdomCommunity", "t_orderDetail");
+		List<List<String>> strList = JdbcUtils.getStringRst("JD2011_WisdomCommunity", "t_orderDetail", list);
+		for(List<String> l : strList){
+			for(String s : l){
+				System.out.print(s + "  ");
+			}
+			System.out.println();
+		}
 	}
 }

@@ -10,15 +10,15 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 
 public class InfoPane extends JPanel {
-	Box hbox; 
-	Box hbox2;
-	Box vbox;
+	private Box hbox; 
+	private Box hbox2;
+	private Box vbox;
 	
-	JButton export; 
-	JButton reset;
-	JButton refresh;
-	JButton view; 
-	JTable table;
+	private JButton export; 
+	private JButton reset;
+	private JButton refresh;
+	private JButton view; 
+	private JTable table;
 	public InfoPane() {
 		init();
 		this.add(vbox);
@@ -35,7 +35,7 @@ public class InfoPane extends JPanel {
 		hbox2 = Box.createHorizontalBox();
 		vbox = Box.createVerticalBox();
 		
-		table = new JTable(9,10);
+		table = new JTable();
 	
 		
 		hbox.add(export);
@@ -76,5 +76,71 @@ public class InfoPane extends JPanel {
 		reset.setBorder(BorderFactory.createEmptyBorder());
 		refresh.setBorder(BorderFactory.createEmptyBorder());
 		view.setBorder(BorderFactory.createEmptyBorder());
+	}
+
+	public Box getHbox() {
+		return hbox;
+	}
+
+	public void setHbox(Box hbox) {
+		this.hbox = hbox;
+	}
+
+	public Box getHbox2() {
+		return hbox2;
+	}
+
+	public void setHbox2(Box hbox2) {
+		this.hbox2 = hbox2;
+	}
+
+	public Box getVbox() {
+		return vbox;
+	}
+
+	public void setVbox(Box vbox) {
+		this.vbox = vbox;
+	}
+
+	public JButton getExport() {
+		return export;
+	}
+
+	public void setExport(JButton export) {
+		this.export = export;
+	}
+
+	public JButton getReset() {
+		return reset;
+	}
+
+	public void setReset(JButton reset) {
+		this.reset = reset;
+	}
+
+	public JButton getRefresh() {
+		return refresh;
+	}
+
+	public void setRefresh(JButton refresh) {
+		this.refresh = refresh;
+	}
+
+	public JButton getView() {
+		return view;
+	}
+
+	public void setView(JButton view) {
+		this.view = view;
+	}
+
+	public JTable getTable() {
+		return table;
+	}
+
+	public void setTable(JTable table) {
+		hbox2.removeAll();
+		hbox2.add(table);
+		this.table = table;
 	}
 }
