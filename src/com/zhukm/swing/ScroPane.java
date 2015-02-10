@@ -1,5 +1,7 @@
 package com.zhukm.swing;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
@@ -41,16 +43,18 @@ public class ScroPane extends JScrollPane {
 						if("数据库列表".equals(node.getParent().toString())) return;
 						String dbName = node.getParent().toString();
 						String table = node.toString();
-						List<String> params = JdbcUtils.parseDB(dbName, table);
-						List<List<String>> strRst = JdbcUtils.getStringRst(dbName, table, params);
-						JTable jt = new JTable(strRst.size()+1,params.size());
-						for(int i = 0; i < params.size(); i++){
+						//List<String> params = JdbcUtils.parseDB(dbName, table);
+						List<List<String>> strRst = JdbcUtils.getStringRst(dbName, table);
+						int col = strRst.get(0).size();
+						JTable jt = new JTable(strRst.size(),col);
+						
+						/*for(int i = 0; i < params.size(); i++){
 							jt.setValueAt(params.get(i), 0, i);
-						}
+						}*/
 						
 						for(int i = 0; i < strRst.size(); i++){
-							for(int j = 0; j < params.size(); j++){
-								jt.setValueAt(strRst.get(i).get(j), i+1, j);
+							for(int j = 0; j < col; j++){
+								jt.setValueAt(strRst.get(i).get(j), i, j);
 							}
 						}
 						infoPane.setTable(jt);
@@ -59,6 +63,8 @@ public class ScroPane extends JScrollPane {
 			}
 			
 		});
+		
+		this.setPreferredSize(new Dimension(250,600));
 		this.setViewportView(tree);
 	}
 	

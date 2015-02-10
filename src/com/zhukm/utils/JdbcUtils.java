@@ -109,9 +109,11 @@ public class JdbcUtils {
 	 * @param params 数据库表字段
 	 * @return 以List<List<String>>的方式返回表中的数据
 	 */
-	public static List<List<String>> getStringRst(String dbName, String table, List<String> params){
+	public static List<List<String>> getStringRst(String dbName, String table){
 		String url = "jdbc:sqlserver://localhost:1433;DatabaseName=" + dbName;
+		List<String> params = JdbcUtils.parseDB(dbName, table);
 		List<List<String>> strRst = new ArrayList<List<String>>();
+		strRst.add(params);
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rst = null;

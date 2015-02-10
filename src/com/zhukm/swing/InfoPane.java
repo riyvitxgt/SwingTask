@@ -1,13 +1,20 @@
 package com.zhukm.swing;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
+
+import com.zhukm.utils.ExportUtils;
 
 public class InfoPane extends JPanel {
 	private Box hbox; 
@@ -19,6 +26,7 @@ public class InfoPane extends JPanel {
 	private JButton refresh;
 	private JButton view; 
 	private JTable table;
+	private JScrollPane scrollPane;
 	public InfoPane() {
 		init();
 		this.add(vbox);
@@ -35,6 +43,10 @@ public class InfoPane extends JPanel {
 		hbox2 = Box.createHorizontalBox();
 		vbox = Box.createVerticalBox();
 		
+		scrollPane = new JScrollPane();
+		
+		
+		
 		table = new JTable();
 	
 		
@@ -47,7 +59,8 @@ public class InfoPane extends JPanel {
 		hbox.add(view);
 		
 		hbox.setBackground(Color.gray);
-		hbox2.add(table);
+		//hbox2.add(table);
+		scrollPane.setPreferredSize(new Dimension(1100,500));
 		
 		vbox.add(hbox);
 		vbox.add(Box.createVerticalGlue());
@@ -55,6 +68,23 @@ public class InfoPane extends JPanel {
 		
 		addIcon();
 		setBorder();
+		
+		export.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JTable table = getTable();
+				if(table == null){
+					System.out.println("还未加载数据库中的数据");
+				}else{
+					ExportUtils.ExportAsExcel(table, "D:\\" + new Date().getTime() + ".xls");
+					/*System.out.println(table);
+					System.out.println(table.getValueAt(0, 0));
+					System.out.println(table.getColumnCount() + "列   " + table.getRowCount() + "行");;*/
+				}
+			}
+			
+		});
 	}
 	
 	public void addIcon(){
@@ -139,8 +169,9 @@ public class InfoPane extends JPanel {
 	}
 
 	public void setTable(JTable table) {
-		hbox2.removeAll();
-		hbox2.add(table);
+		//scrollPane.removeAll();
+		scrollPane.setViewportView(table);
+		hbox2.add(scrollPane);
 		this.table = table;
 	}
 }

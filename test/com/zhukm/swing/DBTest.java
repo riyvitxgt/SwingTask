@@ -75,7 +75,7 @@ public class DBTest {
 	public void testGetParam(){
 		List<String> list = new ArrayList<String>();
 		list = JdbcUtils.parseDB("JD2011_WisdomCommunity", "t_orderDetail");
-		List<List<String>> strList = JdbcUtils.getStringRst("JD2011_WisdomCommunity", "t_orderDetail", list);
+		List<List<String>> strList = JdbcUtils.getStringRst("JD2011_WisdomCommunity", "t_orderDetail");
 		for(List<String> l : strList){
 			for(String s : l){
 				System.out.print(s + "  ");
