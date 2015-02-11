@@ -45,7 +45,7 @@ public class ScroPane extends JScrollPane {
 						String table = node.toString();
 						//List<String> params = JdbcUtils.parseDB(dbName, table);
 						List<List<String>> strRst = JdbcUtils.getStringRst(dbName, table);
-						int col = strRst.get(0).size();
+						int col = strRst.get(1).size();
 						JTable jt = new JTable(strRst.size(),col);
 						
 						/*for(int i = 0; i < params.size(); i++){
@@ -54,7 +54,12 @@ public class ScroPane extends JScrollPane {
 						
 						for(int i = 0; i < strRst.size(); i++){
 							for(int j = 0; j < col; j++){
-								jt.setValueAt(strRst.get(i).get(j), i, j);
+								if(i == 0){
+									jt.setValueAt(strRst.get(0).get(0), 0, col/2);
+									break;
+								}else{
+									jt.setValueAt(strRst.get(i).get(j), i, j);
+								}
 							}
 						}
 						infoPane.setTable(jt);
@@ -86,7 +91,10 @@ public class ScroPane extends JScrollPane {
 				if(rst != null){
 					while(rst.next()){
 						DefaultMutableTreeNode db = new DefaultMutableTreeNode(rst.getString("Name"));
-						root.add(addTable(db,rst.getString("Name")));
+						//如果是tempdb就不加入到树节点中去
+						if(!"tempdb".equals(rst.getString("Name"))){
+							root.add(addTable(db,rst.getString("Name")));
+						}
 					}
 				}
 			}

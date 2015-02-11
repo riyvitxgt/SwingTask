@@ -5,11 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * JDBC����
@@ -113,6 +110,9 @@ public class JdbcUtils {
 		String url = "jdbc:sqlserver://localhost:1433;DatabaseName=" + dbName;
 		List<String> params = JdbcUtils.parseDB(dbName, table);
 		List<List<String>> strRst = new ArrayList<List<String>>();
+		List<String> name = new ArrayList<String>();
+		name.add(table);
+		strRst.add(name);
 		strRst.add(params);
 		Connection conn = null;
 		PreparedStatement pstmt = null;

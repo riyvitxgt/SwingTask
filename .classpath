@@ -5,6 +5,6 @@
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="D:/workspace/Libs/sqlserver/sqljdbc4.jar"/>
-	<classpathentry kind="lib" path="D:/ProgramData/maven/repo/org/apache/poi/poi/3.9/poi-3.9.jar"/>
+	<classpathentry kind="lib" path="D:/ProgramData/maven/repo/org/apache/poi/poi/3.9/poi-3.9.jar" sourcepath="D:/ProgramData/maven/repo/org/apache/poi/poi/3.9/poi-3.9-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

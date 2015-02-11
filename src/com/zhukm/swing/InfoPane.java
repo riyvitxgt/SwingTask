@@ -74,7 +74,7 @@ public class InfoPane extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				JTable table = getTable();
-				if(table == null){
+				if(table.getRowCount() == 0){
 					System.out.println("还未加载数据库中的数据");
 				}else{
 					ExportUtils.ExportAsExcel(table, "D:\\" + new Date().getTime() + ".xls");
