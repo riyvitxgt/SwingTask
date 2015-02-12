@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.zhukm.swing.Config;
+
 /**
  * JDBC����
  * @author zhukm
@@ -72,13 +74,17 @@ public class JdbcUtils {
 	 * @return List<String>形式存放字段名
 	 */
 	public static List<String> parseDB(String dbName, String table){
-		String url = "jdbc:sqlserver://localhost:1433;DatabaseName=" + dbName;
+		if(!Config.isInit()) return null;
+		String server = Config.getValue("server");
+		String user = Config.getValue("user");
+		String password = Config.getValue("password");
+		String url = server + dbName;
 		ArrayList<String> params = new ArrayList<String>();
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rst = null;
 		try {
-			conn = JdbcUtils.getConnection(url, "sa", "ri1yvi2txgt6");
+			conn = JdbcUtils.getConnection(url, user, password);
 			if(conn != null){
 				pstmt = conn.prepareStatement("SELECT Name FROM SysColumns WHERE id=Object_Id('" + table + "') ");
 				if(pstmt != null){
@@ -107,7 +113,11 @@ public class JdbcUtils {
 	 * @return 以List<List<String>>的方式返回表中的数据
 	 */
 	public static List<List<String>> getStringRst(String dbName, String table){
-		String url = "jdbc:sqlserver://localhost:1433;DatabaseName=" + dbName;
+		if(!Config.isInit()) return null;
+		String server = Config.getValue("server");
+		String user = Config.getValue("user");
+		String password = Config.getValue("password");
+		String url = server + dbName;
 		List<String> params = JdbcUtils.parseDB(dbName, table);
 		List<List<String>> strRst = new ArrayList<List<String>>();
 		List<String> name = new ArrayList<String>();
@@ -118,7 +128,7 @@ public class JdbcUtils {
 		PreparedStatement pstmt = null;
 		ResultSet rst = null;
 		try {
-			conn = JdbcUtils.getConnection(url, "sa", "ri1yvi2txgt6");
+			conn = JdbcUtils.getConnection(url, user, password);
 			if(conn != null){
 				pstmt = conn.prepareStatement("SELECT * FROM " + table);
 				if(pstmt != null){

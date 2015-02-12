@@ -17,24 +17,23 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
 import com.zhukm.utils.JdbcUtils;
+import com.zhukm.utils.TreeUtils;
 
 public class ScroPane extends JScrollPane {
-	String url = "jdbc:sqlserver://localhost:1433;DatabaseName=mybatis";
-	String user = "sa";
-	String password = "ri1yvi2txgt6";
 	DefaultMutableTreeNode root = new DefaultMutableTreeNode("数据库列表");
 	private InfoPane infoPane;
 	// root;
 	public ScroPane(InfoPane info) {
-		final JTree tree = new JTree(addDB(root));
+		final JTree tree = new JTree(TreeUtils.addDB(root));
 		
 		this.infoPane = info;
 		tree.addMouseListener(new MouseAdapter(){
-
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int sum = e.getClickCount();
+				//双击事件产生时将对应数据库表的数据写入到JTable中
 				if(sum >1){
+					//获取到点击的那个树节点
 					int n = tree.getRowForLocation(e.getX(), e.getY());
 					if(n < 0) return;
 					TreePath  selTree = tree.getPathForRow(n);
@@ -43,14 +42,9 @@ public class ScroPane extends JScrollPane {
 						if("数据库列表".equals(node.getParent().toString())) return;
 						String dbName = node.getParent().toString();
 						String table = node.toString();
-						//List<String> params = JdbcUtils.parseDB(dbName, table);
 						List<List<String>> strRst = JdbcUtils.getStringRst(dbName, table);
 						int col = strRst.get(1).size();
 						JTable jt = new JTable(strRst.size(),col);
-						
-						/*for(int i = 0; i < params.size(); i++){
-							jt.setValueAt(params.get(i), 0, i);
-						}*/
 						
 						for(int i = 0; i < strRst.size(); i++){
 							for(int j = 0; j < col; j++){
@@ -73,68 +67,5 @@ public class ScroPane extends JScrollPane {
 		this.setViewportView(tree);
 	}
 	
-	/**
-	 * 查询所有数据库,并创建以数据库名为名字的树节点,最后加下root节点下
-	 * @param root	根节点
-	 * @return	
-	 */
-	public DefaultMutableTreeNode addDB(DefaultMutableTreeNode root){
-		Connection conn = null;        
-		PreparedStatement pstmt = null;
-		ResultSet rst = null;  
-		
-		try {
-			conn = JdbcUtils.getConnection(url, user, password);
-			pstmt = conn.prepareStatement("SELECT Name FROM Master..SysDatabases ORDER BY Name");
-			if(pstmt != null){
-				rst = pstmt.executeQuery();
-				if(rst != null){
-					while(rst.next()){
-						DefaultMutableTreeNode db = new DefaultMutableTreeNode(rst.getString("Name"));
-						//如果是tempdb就不加入到树节点中去
-						if(!"tempdb".equals(rst.getString("Name"))){
-							root.add(addTable(db,rst.getString("Name")));
-						}
-					}
-				}
-			}
-			System.out.println(conn);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			JdbcUtils.closeRS(conn, pstmt, rst);
-		}
-		return root;
-	}
 	
-	/**
-	 * 从数据库中查询所有表,并将表名做为一个Node节点
-	 * @param node 父节点
-	 * @param name 数据库表
-	 * @return 名字为表名的树节点
-	 */
-	public DefaultMutableTreeNode addTable(DefaultMutableTreeNode node, String name){
-		String uri = "jdbc:sqlserver://localhost:1433;DatabaseName=" + name;
-		Connection conn = null;        
-		PreparedStatement pstmt = null;
-		ResultSet rst =null; 
-		try {
-			conn = JdbcUtils.getConnection(uri, user, password);
-			pstmt = conn.prepareStatement("select name from sysobjects where xtype='U'");
-			if(pstmt != null){
-				rst = pstmt.executeQuery();
-				if(rst != null){
-					while(rst.next()){
-						DefaultMutableTreeNode table = new DefaultMutableTreeNode(rst.getString("name"));
-						node.add(table);
-					}
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			JdbcUtils.closeRS(conn, pstmt, rst);
-		}
-		return node;
-	}
 }
